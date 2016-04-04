@@ -5,7 +5,7 @@ import com.trolltech.qt.gui._
 
 object init {
   def main(args: Array[String]): Unit = {
-    QApplication.initialize(args)
+    val app = new QApplication(args)
 
     val window = new QWidget()
     val mainLayout = new QHBoxLayout()
@@ -30,6 +30,6 @@ object init {
     window.setLayout(mainLayout)
     window.show()
 
-    QApplication.execStatic()
+    app.exec()
   }
 }
