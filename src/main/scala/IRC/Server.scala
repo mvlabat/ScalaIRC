@@ -3,14 +3,14 @@ package IRC
 import java.io.{BufferedReader, BufferedWriter, InputStreamReader, OutputStreamWriter}
 import java.net.{Socket, SocketAddress}
 
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable
 
 class Server(
               private var host: String = "irc.freenode.net",
               private var port: Int = 6667,
               private var nickname: String = "ScalaIRC"
             ) {
-  private var channels: ArrayBuffer[Channel] = new ArrayBuffer[Channel]()
+  private val channels: mutable.HashMap[String, Channel] = new mutable.HashMap[String, Channel]()
   private var socket: Socket = _
   private var reader: BufferedReader = _
   private var writer: BufferedWriter = _
@@ -28,6 +28,13 @@ class Server(
     this.nickname = nickname
   }
 
+  def write(command: String): Unit = if (isConnected) writer.write(command + "\r\n")
+
+  def sendMessage(target: String, message: String): Unit = {
+    write("PRIVMSG " + target + " :" + message)
+    writer.flush()
+  }
+
   def connect(): Unit = {
     try {
       socket = new Socket(host, port)
@@ -35,13 +42,15 @@ class Server(
       writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream))
 
       // Login.
-      writer.write("NICK " + nickname + "\r\n")
+      isConnected = true
+      write("NICK " + nickname)
+      write("USER " + nickname + " 0 * :mvlabat's IRC client")
+      writer.flush()
 
-      for (channel <- channels) {
-
+      for ((key, channel) <- channels) {
+        write("JOIN " + channel.name)
       }
 
-      isConnected = true
     }
     catch {
       case e: Exception =>
@@ -50,5 +59,15 @@ class Server(
     }
   }
 
-  def read() = if (isConnected) reader.readLine()
+  def addChannel(name: String): Unit = channels.put(name, new Channel(name))
+
+  def addChannel(channel: Channel): Unit = channels.put(channel.name, channel)
+
+  def getChannel(name: String): Channel = channels.getOrElse(name, null.asInstanceOf[Channel])
+
+  def disconnect(): Unit = {
+    socket.close()
+  }
+
+  def read(): String = if (isConnected) reader.readLine() else ""
 }

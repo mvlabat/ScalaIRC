@@ -31,5 +31,6 @@ object init {
     window.show()
 
     app.exec()
+    controller.destroy()
   }
 }
