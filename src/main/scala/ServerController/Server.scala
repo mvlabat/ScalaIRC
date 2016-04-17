@@ -1,11 +1,11 @@
-package IRC
+package ServerController
 
 import java.io.{BufferedReader, BufferedWriter, InputStreamReader, OutputStreamWriter}
-import java.net.{Socket, SocketAddress}
+import java.net.Socket
 
 import scala.collection.mutable
 
-class Server(
+protected class Server(
               private var host: String = "irc.freenode.net",
               private var port: Int = 6667,
               private var nickname: String = "ScalaIRC"
@@ -28,12 +28,14 @@ class Server(
     this.nickname = nickname
   }
 
-  def write(command: String): Unit = if (isConnected) writer.write(command + "\r\n")
-
-  def sendMessage(target: String, message: String): Unit = {
-    write("PRIVMSG " + target + " :" + message)
-    writer.flush()
+  def send(command: String): Unit = {
+    if (isConnected) {
+      writer.write(command + "\r\n")
+      writer.flush()
+    }
   }
+
+  def write(command: String): Unit = if (isConnected) writer.write(command + "\r\n")
 
   def connect(): Unit = {
     try {
