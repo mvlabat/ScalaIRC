@@ -1,8 +1,8 @@
-package UserInputController
+package Server.UserInputController
 
 class Command(var logMessage: String) {
-  def execute(): Unit = {
-    ChatView.Controller.log(logMessage)
+  protected[UserInputController] def execute(): Unit = {
+    ChatView.View.log(logMessage)
   }
 }
 
@@ -17,6 +17,6 @@ class SendMessageToChannelCommand(val message: String) extends Command("") with 
 
   override def execute(): Unit = {
     super.execute()
-    ServerController.Main.activeServer.send("PRIVMSG " + ServerController.Main.activeChannel.name + " :" + message)
+    Server.Model.activeConnection.send("PRIVMSG " + Server.Model.activeChannel.name + " :" + message)
   }
 }

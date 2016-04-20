@@ -1,9 +1,8 @@
 package ChatView
 
-import com.trolltech.qt.QSignalEmitter
 import com.trolltech.qt.gui._
 
-object Controller extends QSignalEmitter {
+protected object Widgets {
   val window = new QWidget()
   val mainLayout = new QHBoxLayout()
   val channelsTree = new QTreeWidget()
@@ -24,28 +23,4 @@ object Controller extends QSignalEmitter {
   channelsTree.setColumnCount(1)
   chatTextAreaMessages.setReadOnly(true)
   chatTextAreaLog.setReadOnly(true)
-
-  protected var initialized = false
-  def Initialize(): Unit = {
-    if (initialized) return
-    initialized = true
-
-    // Connect signals and slots.
-    chatInput.returnPressed.connect(this, "emitInputSent()")
-
-    // Initialize the window.
-    window.setLayout(mainLayout)
-    window.resize(800, 500)
-    window.show()
-  }
-
-  val inputSent: Signal1[String] = new Signal1[String]()
-  protected def emitInputSent() = {
-    inputSent.emit(chatInput.text())
-    chatInput.setText("")
-  }
-
-  def log(log: String): Unit = {
-    chatTextAreaLog.append(log)
-  }
 }

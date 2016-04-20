@@ -1,4 +1,4 @@
-package UserInputController
+package Server.UserInputController
 
 protected object Analyze {
   def apply(input: String): Command = {
