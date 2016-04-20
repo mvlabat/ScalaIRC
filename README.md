@@ -1,6 +1,6 @@
 # ScalaIRC
 This is my IRC client, which is currently under development.
-Currently it support only connecting to freenode #botwar channel and reading/sending messages.
+Currently it supports only connecting to freenode #botwar channel and reading/sending messages.
 
 ## Nearest plans
 * Do final steps for multiple servers and channels support
@@ -10,4 +10,9 @@ Currently it support only connecting to freenode #botwar channel and reading/sen
 ## Running
 ```
 sbt run
+```
+
+## Testing
+```
+sbt test
 ```
